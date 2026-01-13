@@ -162,9 +162,9 @@ export default function Cart() {
 
         {/* Title */}
         <div className="mb-6">
-          <h1 className="font-display text-2xl text-charcoal mb-1">Your Shopping Cart</h1>
+          <h1 className="font-display text-2xl text-charcoal mb-1">Your Grocery List</h1>
           <p className="text-charcoal/60 text-sm">
-            {checkedItems.length} of {items.length} items selected · Tap to toggle items
+            {checkedItems.length} of {items.length} items · We'll find the best prices across stores
           </p>
         </div>
 
@@ -186,10 +186,11 @@ export default function Cart() {
             <div>
               <div className="text-sm text-charcoal/60">{checkedItems.length} items</div>
               <div className="text-2xl font-display text-charcoal">${total.toFixed(2)}</div>
+              <div className="text-xs text-charcoal/40">Estimated · Final prices may vary</div>
             </div>
             <div className="text-right">
-              <div className="text-xs text-charcoal/50">Est. savings</div>
-              <div className="text-sm text-secondary-600 font-medium">-$12.50 vs retail</div>
+              <div className="text-xs text-charcoal/50">Avg. savings</div>
+              <div className="text-sm text-secondary-600 font-medium">~$12-15 with smart shopping</div>
             </div>
           </div>
 
@@ -197,11 +198,11 @@ export default function Cart() {
             onClick={() => navigate('/checkout')}
             className="w-full btn-primary py-4 text-lg"
           >
-            Checkout · ${total.toFixed(2)}
+            Find Best Prices →
           </button>
 
           <p className="text-center text-xs text-charcoal/40 mt-3">
-            Secure checkout powered by Stripe
+            We'll search Whole Foods, Kroger, Costco & more
           </p>
         </div>
       </div>

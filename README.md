@@ -37,12 +37,17 @@ Food Minded takes the guesswork out of family nutrition. Tell us your dietary go
 | ![Variety](screenshots/desktop/07-wizard-step4-variety.png) | ![Summary](screenshots/desktop/08-wizard-step5-summary.png) |
 | Meal variety preference | Review & confirm |
 
-#### Meal Plan, Cart & Checkout
+#### Meal Plan & Smart Checkout
 
-| Meal Plan | Shopping Cart | Checkout | Confirmed |
-|-----------|---------------|----------|-----------|
-| ![Plan](screenshots/desktop/09-meal-plan.png) | ![Cart](screenshots/desktop/10-cart.png) | ![Checkout](screenshots/desktop/11-checkout.png) | ![Confirmed](screenshots/desktop/12-order-confirmed.png) |
-| 3-day plan with macros | Edit quantities | Delivery options | Order success! |
+| Meal Plan | Grocery List | Smart Checkout |
+|-----------|--------------|----------------|
+| ![Plan](screenshots/desktop/09-meal-plan.png) | ![Cart](screenshots/desktop/10-cart.png) | ![Checkout](screenshots/desktop/11-checkout-smart.png) |
+| 3-day plan with macros | Edit your list | Search partner stores |
+
+| Multi-Store Cart | Orders Confirmed |
+|------------------|------------------|
+| ![Multistore](screenshots/desktop/13-checkout-multistore.png) | ![Confirmed](screenshots/desktop/14-orders-confirmed.png) |
+| Best prices across 3 stores | Coordinated delivery from all retailers |
 
 ### Mobile View (iPhone 17 Pro)
 
@@ -54,9 +59,9 @@ Food Minded takes the guesswork out of family nutrition. Tell us your dietary go
 |---------------|---------------|---------------|-----------|
 | ![Step3](screenshots/mobile/05-wizard-step3.png) | ![Step4](screenshots/mobile/06-wizard-step4.png) | ![Step5](screenshots/mobile/07-wizard-step5.png) | ![Plan](screenshots/mobile/08-meal-plan.png) |
 
-| Shopping Cart | Checkout | Order Confirmed |
-|---------------|----------|-----------------|
-| ![Cart](screenshots/mobile/09-cart.png) | ![Checkout](screenshots/mobile/10-checkout.png) | ![Confirmed](screenshots/mobile/11-order-confirmed.png) |
+| Grocery List | Smart Checkout | Multi-Store Cart | Orders Confirmed |
+|--------------|----------------|------------------|------------------|
+| ![Cart](screenshots/mobile/09-cart.png) | ![Checkout](screenshots/mobile/10-checkout-smart.png) | ![Multistore](screenshots/mobile/11-checkout-multistore.png) | ![Confirmed](screenshots/mobile/12-orders-confirmed.png) |
 
 ## MVP Features
 
@@ -90,11 +95,18 @@ Food Minded takes the guesswork out of family nutrition. Tell us your dietary go
 - **Per-Meal Nutrition**: Calories, protein, carbs, and fat for each meal
 - **Shopping List**: Consolidated ingredients with estimated prices
 
-### 7. Shopping Cart & Checkout
-- **Categorized Items**: Protein, Dairy, Produce, Grains, Pantry, Deli
-- **Quantity Controls**: Adjust amounts or remove items
-- **Delivery Options**: Store pickup (free) or home delivery
-- **Order Confirmation**: Clear next steps after placing order
+### 7. Smart Multi-Store Shopping
+- **Grocery List Builder**: Categorized items (Protein, Dairy, Produce, Grains, Pantry, Deli)
+- **Smart Price Search**: Automatically find best prices across partner retailers
+- **Multi-Store Cart**: Split your list across Whole Foods, Kroger, Costco & more for maximum savings
+- **Coordinated Delivery**: All items delivered to your door from multiple stores
+- **Commerce Protocol Integration**: Powered by Google UCP & OpenAI ACP for seamless checkout
+
+### 8. Privacy-First Architecture
+- **No Payment Storage**: We never store your credit card - payments handled by partner retailers
+- **No Address Storage**: Delivery addresses come from your linked Google/PayPal accounts
+- **OAuth 2.0 Linking**: Securely connect your existing retailer accounts
+- **Delegated Payments**: Single-use payment tokens protect your financial data
 
 ## Tech Stack
 
@@ -104,7 +116,8 @@ Food Minded takes the guesswork out of family nutrition. Tell us your dietary go
 | **Backend** | Python FastAPI, SQLite, SQLAlchemy ORM |
 | **AI** | Claude API for intelligent meal generation |
 | **Food Data** | USDA FoodData Central API |
-| **Auth** | JWT tokens with bcrypt password hashing |
+| **Commerce** | Google UCP + OpenAI ACP for multi-store checkout |
+| **Auth** | JWT (app) + OAuth 2.0 (retailer linking) |
 | **Deployment** | Docker Compose |
 
 ## Design Philosophy
