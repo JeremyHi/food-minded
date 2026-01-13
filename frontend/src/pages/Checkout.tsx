@@ -26,7 +26,7 @@ export default function Checkout() {
   const { logout } = useAuthStore()
 
   const [step, setStep] = useState<CheckoutStep>('review')
-  const [selectedRetailers, setSelectedRetailers] = useState<typeof MOCK_RETAILERS>(MOCK_RETAILERS)
+  const [selectedRetailers, _setSelectedRetailers] = useState<typeof MOCK_RETAILERS>(MOCK_RETAILERS)
 
   const orderSummary = cart
     ? {

@@ -7,6 +7,9 @@ import Configure from './pages/Configure'
 import MealPlan from './pages/MealPlan'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
+import Pricing from './pages/Pricing'
+import Billing from './pages/Billing'
+import BillingSuccess from './pages/BillingSuccess'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
@@ -24,6 +27,7 @@ function App() {
       <div className="min-h-screen bg-cream">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/pricing" element={<Pricing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route
@@ -55,6 +59,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <Checkout />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/billing"
+            element={
+              <ProtectedRoute>
+                <Billing />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/billing/success"
+            element={
+              <ProtectedRoute>
+                <BillingSuccess />
               </ProtectedRoute>
             }
           />

@@ -118,4 +118,86 @@ export const api = {
     list: (limit = 10) =>
       request<Order[]>(`/cart/orders/?limit=${limit}`),
   },
+
+  billing: {
+    getPlans: () =>
+      request<{
+        free: PricingPlan
+        pro: PricingPlan
+        single: PricingPlan
+      }>('/billing/plans'),
+
+    createCheckout: (mode: 'subscription' | 'payment') =>
+      request<{ checkout_url: string; session_id: string }>('/billing/create-checkout-session', {
+        method: 'POST',
+        body: JSON.stringify({ mode }),
+      }),
+
+    createPortal: () =>
+      request<{ portal_url: string }>('/billing/create-portal-session', {
+        method: 'POST',
+      }),
+
+    getSubscription: () =>
+      request<SubscriptionStatus>('/billing/subscription'),
+
+    getUsage: () =>
+      request<UsageStatus>('/billing/usage'),
+
+    cancelSubscription: () =>
+      request<{ success: boolean; message: string }>('/billing/cancel-subscription', {
+        method: 'POST',
+      }),
+
+    getPayments: (limit = 10) =>
+      request<{ payments: PaymentHistoryItem[] }>(`/billing/payments?limit=${limit}`),
+  },
+}
+
+// Billing types
+interface PlanFeatures {
+  plans_per_month: number | string
+  max_days: number
+  diet_types: string
+  can_customize_macros: boolean
+  can_regenerate: boolean
+  can_export_pdf: boolean
+  smart_pricing: boolean
+  priority_support: boolean
+}
+
+interface PricingPlan {
+  name: string
+  price_cents: number
+  interval: string | null
+  features: PlanFeatures
+}
+
+interface SubscriptionStatus {
+  plan: string
+  status: string
+  stripe_subscription_id: string | null
+  current_period_start: string | null
+  current_period_end: string | null
+  cancel_at_period_end: boolean
+}
+
+interface UsageStatus {
+  plan: string
+  is_first_plan: boolean
+  plans_created_this_month: number
+  plans_limit: number | string
+  can_create_plan: boolean
+  max_days: number
+  message: string | null
+}
+
+interface PaymentHistoryItem {
+  id: number
+  amount_paid: number
+  currency: string
+  status: string
+  description: string | null
+  invoice_url: string | null
+  created_at: string
 }

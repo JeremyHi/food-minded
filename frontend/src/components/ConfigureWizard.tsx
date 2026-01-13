@@ -127,7 +127,7 @@ export default function ConfigureWizard() {
         {/* Progress Indicator */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-3">
-            {STEPS.map((step, index) => (
+            {STEPS.map((step) => (
               <button
                 key={step.id}
                 onClick={() => step.id < currentStep && goToStep(step.id)}

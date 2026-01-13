@@ -21,6 +21,12 @@ class Settings(BaseSettings):
     USDA_API_KEY: str = ""
     ANTHROPIC_API_KEY: str = ""
 
+    # Stripe
+    STRIPE_SECRET_KEY: str = ""
+    STRIPE_WEBHOOK_SECRET: str = ""
+    STRIPE_PRICE_PRO_MONTHLY: str = ""
+    FRONTEND_URL: str = "http://localhost:3001"
+
     # App
     APP_NAME: str = "Food Minded"
     DEBUG: bool = False

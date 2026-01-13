@@ -5,12 +5,22 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL:-http://localhost:8000}
     ports:
       - "3000:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   backend:
     build:
@@ -19,15 +29,39 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend/data:/app/data
+      # CRITICAL: Named volume for database persistence across deployments
+      # This volume persists even when containers are removed/rebuilt
+      - db-data:/app/data
     environment:
       - DATABASE_URL=sqlite:///./data/food_minded.db
       - SECRET_KEY=${SECRET_KEY:-dev-secret-key-change-in-production}
       - USDA_API_KEY=${USDA_API_KEY}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      # Stripe configuration
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - STRIPE_PRICE_PRO_MONTHLY=${STRIPE_PRICE_PRO_MONTHLY}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
+    restart: unless-stopped
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
 networks:
   app-network:
     driver: bridge
+
+# Named volumes for persistent data
+# CRITICAL: This ensures database survives container rebuilds
+volumes:
+  db-data:
+    driver: local
+    # Optional: Add labels for better management
+    labels:
+      - "com.food-minded.description=SQLite database storage"
+      - "com.food-minded.backup=required"

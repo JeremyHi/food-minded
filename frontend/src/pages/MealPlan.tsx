@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom'
 import { usePlanStore } from '../store/planStore'
 import { useAuthStore } from '../store/authStore'
 
+type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack'
+
 // Mock data for demo/screenshots
 const MOCK_PLAN = {
   id: 'demo-plan-001',
@@ -10,47 +12,47 @@ const MOCK_PLAN = {
     {
       day: 1,
       meals: [
-        { type: 'breakfast', name: 'Greek Yogurt Parfait with Berries', macros: { calories: 320, protein_g: 18, carbs_g: 42, fat_g: 8 } },
-        { type: 'lunch', name: 'Grilled Chicken Caesar Salad', macros: { calories: 450, protein_g: 35, carbs_g: 18, fat_g: 28 } },
-        { type: 'dinner', name: 'Herb-Crusted Salmon with Quinoa', macros: { calories: 520, protein_g: 42, carbs_g: 35, fat_g: 22 } },
-        { type: 'snack', name: 'Apple Slices with Almond Butter', macros: { calories: 210, protein_g: 5, carbs_g: 24, fat_g: 12 } },
+        { type: 'breakfast' as MealType, name: 'Greek Yogurt Parfait with Berries', macros: { calories: 320, protein_g: 18, carbs_g: 42, fat_g: 8 } },
+        { type: 'lunch' as MealType, name: 'Grilled Chicken Caesar Salad', macros: { calories: 450, protein_g: 35, carbs_g: 18, fat_g: 28 } },
+        { type: 'dinner' as MealType, name: 'Herb-Crusted Salmon with Quinoa', macros: { calories: 520, protein_g: 42, carbs_g: 35, fat_g: 22 } },
+        { type: 'snack' as MealType, name: 'Apple Slices with Almond Butter', macros: { calories: 210, protein_g: 5, carbs_g: 24, fat_g: 12 } },
       ],
       daily_totals: { calories: 1500, protein_g: 100, carbs_g: 119, fat_g: 70 }
     },
     {
       day: 2,
       meals: [
-        { type: 'breakfast', name: 'Spinach & Feta Egg White Omelette', macros: { calories: 280, protein_g: 24, carbs_g: 8, fat_g: 16 } },
-        { type: 'lunch', name: 'Turkey & Avocado Wrap', macros: { calories: 420, protein_g: 28, carbs_g: 38, fat_g: 18 } },
-        { type: 'dinner', name: 'Lean Beef Stir-Fry with Brown Rice', macros: { calories: 550, protein_g: 38, carbs_g: 48, fat_g: 22 } },
-        { type: 'snack', name: 'Mixed Nuts & Dark Chocolate', macros: { calories: 250, protein_g: 6, carbs_g: 18, fat_g: 18 } },
+        { type: 'breakfast' as MealType, name: 'Spinach & Feta Egg White Omelette', macros: { calories: 280, protein_g: 24, carbs_g: 8, fat_g: 16 } },
+        { type: 'lunch' as MealType, name: 'Turkey & Avocado Wrap', macros: { calories: 420, protein_g: 28, carbs_g: 38, fat_g: 18 } },
+        { type: 'dinner' as MealType, name: 'Lean Beef Stir-Fry with Brown Rice', macros: { calories: 550, protein_g: 38, carbs_g: 48, fat_g: 22 } },
+        { type: 'snack' as MealType, name: 'Mixed Nuts & Dark Chocolate', macros: { calories: 250, protein_g: 6, carbs_g: 18, fat_g: 18 } },
       ],
       daily_totals: { calories: 1500, protein_g: 96, carbs_g: 112, fat_g: 74 }
     },
     {
       day: 3,
       meals: [
-        { type: 'breakfast', name: 'Overnight Oats with Banana', macros: { calories: 350, protein_g: 12, carbs_g: 58, fat_g: 8 } },
-        { type: 'lunch', name: 'Mediterranean Quinoa Bowl', macros: { calories: 480, protein_g: 18, carbs_g: 52, fat_g: 22 } },
-        { type: 'dinner', name: 'Grilled Chicken with Sweet Potato', macros: { calories: 490, protein_g: 40, carbs_g: 42, fat_g: 16 } },
-        { type: 'snack', name: 'Hummus with Veggie Sticks', macros: { calories: 180, protein_g: 6, carbs_g: 20, fat_g: 8 } },
+        { type: 'breakfast' as MealType, name: 'Overnight Oats with Banana', macros: { calories: 350, protein_g: 12, carbs_g: 58, fat_g: 8 } },
+        { type: 'lunch' as MealType, name: 'Mediterranean Quinoa Bowl', macros: { calories: 480, protein_g: 18, carbs_g: 52, fat_g: 22 } },
+        { type: 'dinner' as MealType, name: 'Grilled Chicken with Sweet Potato', macros: { calories: 490, protein_g: 40, carbs_g: 42, fat_g: 16 } },
+        { type: 'snack' as MealType, name: 'Hummus with Veggie Sticks', macros: { calories: 180, protein_g: 6, carbs_g: 20, fat_g: 8 } },
       ],
       daily_totals: { calories: 1500, protein_g: 76, carbs_g: 172, fat_g: 54 }
     },
   ],
   shopping_list: [
-    { name: 'Chicken Breast (2 lbs)', estimated_price: 12.99, quantity: 1 },
-    { name: 'Salmon Fillet (1 lb)', estimated_price: 14.99, quantity: 1 },
-    { name: 'Greek Yogurt (32oz)', estimated_price: 5.99, quantity: 1 },
-    { name: 'Mixed Berries (frozen)', estimated_price: 4.99, quantity: 1 },
-    { name: 'Quinoa (1 lb bag)', estimated_price: 6.99, quantity: 1 },
-    { name: 'Brown Rice (2 lb bag)', estimated_price: 4.49, quantity: 1 },
-    { name: 'Mixed Greens (5oz)', estimated_price: 4.99, quantity: 2 },
-    { name: 'Sweet Potatoes (3 lb)', estimated_price: 3.99, quantity: 1 },
-    { name: 'Avocados (4 pack)', estimated_price: 5.99, quantity: 1 },
-    { name: 'Eggs (dozen)', estimated_price: 4.99, quantity: 1 },
-    { name: 'Almond Butter (16oz)', estimated_price: 8.99, quantity: 1 },
-    { name: 'Hummus (10oz)', estimated_price: 4.49, quantity: 1 },
+    { name: 'Chicken Breast (2 lbs)', estimated_price: 12.99, quantity: 1, unit: 'pkg' },
+    { name: 'Salmon Fillet (1 lb)', estimated_price: 14.99, quantity: 1, unit: 'lb' },
+    { name: 'Greek Yogurt (32oz)', estimated_price: 5.99, quantity: 1, unit: 'container' },
+    { name: 'Mixed Berries (frozen)', estimated_price: 4.99, quantity: 1, unit: 'bag' },
+    { name: 'Quinoa (1 lb bag)', estimated_price: 6.99, quantity: 1, unit: 'bag' },
+    { name: 'Brown Rice (2 lb bag)', estimated_price: 4.49, quantity: 1, unit: 'bag' },
+    { name: 'Mixed Greens (5oz)', estimated_price: 4.99, quantity: 2, unit: 'container' },
+    { name: 'Sweet Potatoes (3 lb)', estimated_price: 3.99, quantity: 1, unit: 'bag' },
+    { name: 'Avocados (4 pack)', estimated_price: 5.99, quantity: 1, unit: 'pack' },
+    { name: 'Eggs (dozen)', estimated_price: 4.99, quantity: 1, unit: 'dozen' },
+    { name: 'Almond Butter (16oz)', estimated_price: 8.99, quantity: 1, unit: 'jar' },
+    { name: 'Hummus (10oz)', estimated_price: 4.49, quantity: 1, unit: 'container' },
   ],
   total_cost_estimate: 89.86,
 }
@@ -111,11 +113,11 @@ export default function MealPlan() {
     setCart({
       id: 'demo-cart-001',
       items: MOCK_PLAN.shopping_list.map((item, idx) => ({
-        id: `item-${idx}`,
+        product_id: `item-${idx}`,
         name: item.name,
         quantity: item.quantity,
+        unit: item.unit || 'each',
         price: item.estimated_price,
-        checked: true,
       })),
       total: MOCK_PLAN.total_cost_estimate,
     })
