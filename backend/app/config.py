@@ -1,10 +1,16 @@
 from pydantic_settings import BaseSettings
 from functools import lru_cache
+from pathlib import Path
+
+# Get the backend directory path
+BACKEND_DIR = Path(__file__).parent.parent
+DATA_DIR = BACKEND_DIR / "data"
+DATA_DIR.mkdir(exist_ok=True)
 
 
 class Settings(BaseSettings):
     # Database
-    DATABASE_URL: str = "sqlite:///./data/food_minded.db"
+    DATABASE_URL: str = f"sqlite:///{DATA_DIR}/food_minded.db"
 
     # Security
     SECRET_KEY: str = "dev-secret-key-change-in-production"

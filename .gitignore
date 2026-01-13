@@ -55,3 +55,6 @@ htmlcov/
 *.key
 credentials.json
 secrets.json
+
+# Screenshots (captured locally)
+screenshots/
