@@ -36,7 +36,7 @@ services:
       - DATABASE_URL=sqlite:///./data/food_minded.db
       - SECRET_KEY=${SECRET_KEY:-dev-secret-key-change-in-production}
       - USDA_API_KEY=${USDA_API_KEY}
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       # Stripe configuration
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}

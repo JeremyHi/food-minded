@@ -19,7 +19,7 @@ class Settings(BaseSettings):
 
     # External APIs
     USDA_API_KEY: str = ""
-    ANTHROPIC_API_KEY: str = ""
+    GOOGLE_API_KEY: str = ""  # Gemini API - get from https://aistudio.google.com/apikey
 
     # Stripe
     STRIPE_SECRET_KEY: str = ""

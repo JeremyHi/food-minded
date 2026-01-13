@@ -3,15 +3,39 @@ from typing import Dict, Any, List
 from app.config import settings
 from app.utils.macros import calculate_macro_grams
 
-# Try to import anthropic, fall back to mock if not available
+# Try to import Google Generative AI, fall back to mock if not available
 try:
-    from anthropic import Anthropic
+    import google.generativeai as genai
 
-    client = Anthropic(api_key=settings.ANTHROPIC_API_KEY) if settings.ANTHROPIC_API_KEY else None
+    if settings.GOOGLE_API_KEY:
+        genai.configure(api_key=settings.GOOGLE_API_KEY)
+        # Use Gemini 2.0 Flash - best balance of cost/quality/speed
+        # Pricing: ~$0.10/1M input, ~$0.40/1M output (Flash-Lite even cheaper)
+        model = genai.GenerativeModel(
+            model_name="gemini-2.0-flash",
+            generation_config=genai.GenerationConfig(
+                # Native JSON mode - guarantees valid JSON output
+                response_mime_type="application/json",
+                # Limit output tokens to control costs (meal plan ~3000 tokens)
+                max_output_tokens=8192,
+                # Moderate temperature for consistent but varied meals
+                temperature=0.7,
+            ),
+            # Safety settings - allow food-related content
+            safety_settings={
+                "HARM_CATEGORY_HARASSMENT": "BLOCK_ONLY_HIGH",
+                "HARM_CATEGORY_HATE_SPEECH": "BLOCK_ONLY_HIGH",
+                "HARM_CATEGORY_SEXUALLY_EXPLICIT": "BLOCK_ONLY_HIGH",
+                "HARM_CATEGORY_DANGEROUS_CONTENT": "BLOCK_ONLY_HIGH",
+            },
+        )
+    else:
+        model = None
 except ImportError:
-    client = None
+    model = None
+    genai = None
 
-SYSTEM_PROMPT = """You are a nutritionist and meal planning expert. Generate meal plans that:
+SYSTEM_INSTRUCTION = """You are a nutritionist and meal planning expert. Generate meal plans that:
 1. Strictly adhere to the specified macro ratios
 2. Never include ingredients the user is allergic to
 3. Stay within the specified budget
@@ -19,7 +43,7 @@ SYSTEM_PROMPT = """You are a nutritionist and meal planning expert. Generate mea
 5. Include realistic portion sizes
 6. Use whole, unprocessed foods when possible
 
-Output your response as valid JSON matching the specified schema. Do not include any text outside the JSON."""
+Output your response as valid JSON matching the specified schema."""
 
 
 def generate_meal_plan(
@@ -35,7 +59,7 @@ def generate_meal_plan(
     daily_calories: int = 2000,
 ) -> Dict[str, Any]:
     """
-    Generate a meal plan using Claude API.
+    Generate a meal plan using Google Gemini API.
 
     Args:
         diet_type: Name of diet type
@@ -69,7 +93,9 @@ def generate_meal_plan(
     }
     allergy_list = [allergy_names.get(a, a) for a in allergies]
 
-    prompt = f"""Generate a {meal_days}-day meal plan with the following requirements:
+    prompt = f"""{SYSTEM_INSTRUCTION}
+
+Generate a {meal_days}-day meal plan with the following requirements:
 
 DIET TYPE: {diet_type}
 
@@ -124,29 +150,18 @@ Important:
 - Use realistic prices for US grocery stores
 - Round prices to 2 decimal places"""
 
-    # Use Claude API if available
-    if client and settings.ANTHROPIC_API_KEY:
+    # Use Gemini API if available
+    if model and settings.GOOGLE_API_KEY:
         try:
-            response = client.messages.create(
-                model="claude-sonnet-4-20250514",
-                max_tokens=8192,
-                system=SYSTEM_PROMPT,
-                messages=[{"role": "user", "content": prompt}],
-            )
+            response = model.generate_content(prompt)
 
-            content = response.content[0].text
-
-            # Handle potential markdown code blocks
-            if "```json" in content:
-                content = content.split("```json")[1].split("```")[0]
-            elif "```" in content:
-                content = content.split("```")[1].split("```")[0]
-
-            plan_data = json.loads(content.strip())
+            # Gemini with response_mime_type="application/json" returns clean JSON
+            content = response.text
+            plan_data = json.loads(content)
             return plan_data
 
         except Exception as e:
-            print(f"Error generating meal plan with Claude: {e}")
+            print(f"Error generating meal plan with Gemini: {e}")
             return _generate_mock_plan(meal_days, daily_calories, carb_g, protein_g, fat_g)
 
     # Fallback to mock data

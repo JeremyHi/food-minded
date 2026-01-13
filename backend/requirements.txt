@@ -19,8 +19,8 @@ email-validator==2.1.0
 # HTTP client
 httpx==0.26.0
 
-# AI
-anthropic==0.18.1
+# AI - Google Gemini (cost-effective for structured output)
+google-generativeai==0.8.3
 
 # Payments
 stripe==8.0.0
