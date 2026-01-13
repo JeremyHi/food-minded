@@ -1,31 +1,92 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { api } from '../api/client'
 import { usePlanStore } from '../store/planStore'
 import { useAuthStore } from '../store/authStore'
-import type { MealPlan as MealPlanType, Meal } from '../types'
 
-function MealCard({ meal }: { meal: Meal }) {
-  const typeColors = {
-    breakfast: 'bg-yellow-100 text-yellow-800',
-    lunch: 'bg-green-100 text-green-800',
-    dinner: 'bg-blue-100 text-blue-800',
-    snack: 'bg-purple-100 text-purple-800',
+// Mock data for demo/screenshots
+const MOCK_PLAN = {
+  id: 'demo-plan-001',
+  days: [
+    {
+      day: 1,
+      meals: [
+        { type: 'breakfast', name: 'Greek Yogurt Parfait with Berries', macros: { calories: 320, protein_g: 18, carbs_g: 42, fat_g: 8 } },
+        { type: 'lunch', name: 'Grilled Chicken Caesar Salad', macros: { calories: 450, protein_g: 35, carbs_g: 18, fat_g: 28 } },
+        { type: 'dinner', name: 'Herb-Crusted Salmon with Quinoa', macros: { calories: 520, protein_g: 42, carbs_g: 35, fat_g: 22 } },
+        { type: 'snack', name: 'Apple Slices with Almond Butter', macros: { calories: 210, protein_g: 5, carbs_g: 24, fat_g: 12 } },
+      ],
+      daily_totals: { calories: 1500, protein_g: 100, carbs_g: 119, fat_g: 70 }
+    },
+    {
+      day: 2,
+      meals: [
+        { type: 'breakfast', name: 'Spinach & Feta Egg White Omelette', macros: { calories: 280, protein_g: 24, carbs_g: 8, fat_g: 16 } },
+        { type: 'lunch', name: 'Turkey & Avocado Wrap', macros: { calories: 420, protein_g: 28, carbs_g: 38, fat_g: 18 } },
+        { type: 'dinner', name: 'Lean Beef Stir-Fry with Brown Rice', macros: { calories: 550, protein_g: 38, carbs_g: 48, fat_g: 22 } },
+        { type: 'snack', name: 'Mixed Nuts & Dark Chocolate', macros: { calories: 250, protein_g: 6, carbs_g: 18, fat_g: 18 } },
+      ],
+      daily_totals: { calories: 1500, protein_g: 96, carbs_g: 112, fat_g: 74 }
+    },
+    {
+      day: 3,
+      meals: [
+        { type: 'breakfast', name: 'Overnight Oats with Banana', macros: { calories: 350, protein_g: 12, carbs_g: 58, fat_g: 8 } },
+        { type: 'lunch', name: 'Mediterranean Quinoa Bowl', macros: { calories: 480, protein_g: 18, carbs_g: 52, fat_g: 22 } },
+        { type: 'dinner', name: 'Grilled Chicken with Sweet Potato', macros: { calories: 490, protein_g: 40, carbs_g: 42, fat_g: 16 } },
+        { type: 'snack', name: 'Hummus with Veggie Sticks', macros: { calories: 180, protein_g: 6, carbs_g: 20, fat_g: 8 } },
+      ],
+      daily_totals: { calories: 1500, protein_g: 76, carbs_g: 172, fat_g: 54 }
+    },
+  ],
+  shopping_list: [
+    { name: 'Chicken Breast (2 lbs)', estimated_price: 12.99, quantity: 1 },
+    { name: 'Salmon Fillet (1 lb)', estimated_price: 14.99, quantity: 1 },
+    { name: 'Greek Yogurt (32oz)', estimated_price: 5.99, quantity: 1 },
+    { name: 'Mixed Berries (frozen)', estimated_price: 4.99, quantity: 1 },
+    { name: 'Quinoa (1 lb bag)', estimated_price: 6.99, quantity: 1 },
+    { name: 'Brown Rice (2 lb bag)', estimated_price: 4.49, quantity: 1 },
+    { name: 'Mixed Greens (5oz)', estimated_price: 4.99, quantity: 2 },
+    { name: 'Sweet Potatoes (3 lb)', estimated_price: 3.99, quantity: 1 },
+    { name: 'Avocados (4 pack)', estimated_price: 5.99, quantity: 1 },
+    { name: 'Eggs (dozen)', estimated_price: 4.99, quantity: 1 },
+    { name: 'Almond Butter (16oz)', estimated_price: 8.99, quantity: 1 },
+    { name: 'Hummus (10oz)', estimated_price: 4.49, quantity: 1 },
+  ],
+  total_cost_estimate: 89.86,
+}
+
+interface Meal {
+  type: 'breakfast' | 'lunch' | 'dinner' | 'snack'
+  name: string
+  macros: { calories: number; protein_g: number; carbs_g: number; fat_g: number }
+}
+
+function MealCard({ meal, index }: { meal: Meal; index: number }) {
+  const typeConfig = {
+    breakfast: { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700', icon: '🌅' },
+    lunch: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', icon: '☀️' },
+    dinner: { bg: 'bg-indigo-50', border: 'border-indigo-200', text: 'text-indigo-700', icon: '🌙' },
+    snack: { bg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-700', icon: '🍎' },
   }
+  const config = typeConfig[meal.type]
 
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm">
-      <div className="flex items-start justify-between mb-2">
-        <span className={`px-2 py-1 rounded text-xs font-medium capitalize ${typeColors[meal.type]}`}>
+    <div
+      className={`${config.bg} border ${config.border} rounded-xl p-4 transition-all hover:shadow-md`}
+      style={{ animationDelay: `${index * 100}ms` }}
+    >
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-lg">{config.icon}</span>
+        <span className={`text-xs font-semibold uppercase tracking-wide ${config.text}`}>
           {meal.type}
         </span>
-        <span className="text-sm text-gray-500">{meal.macros.calories} cal</span>
+        <span className="ml-auto text-sm font-medium text-charcoal/60">{meal.macros.calories} cal</span>
       </div>
-      <h4 className="font-medium text-charcoal mb-2">{meal.name}</h4>
-      <div className="flex gap-3 text-xs text-gray-500">
-        <span>P: {meal.macros.protein_g}g</span>
-        <span>C: {meal.macros.carbs_g}g</span>
-        <span>F: {meal.macros.fat_g}g</span>
+      <h4 className="font-semibold text-charcoal mb-2 leading-tight">{meal.name}</h4>
+      <div className="flex gap-3 text-xs text-charcoal/50">
+        <span className="bg-white/50 px-2 py-1 rounded">P: {meal.macros.protein_g}g</span>
+        <span className="bg-white/50 px-2 py-1 rounded">C: {meal.macros.carbs_g}g</span>
+        <span className="bg-white/50 px-2 py-1 rounded">F: {meal.macros.fat_g}g</span>
       </div>
     </div>
   )
@@ -33,182 +94,136 @@ function MealCard({ meal }: { meal: Meal }) {
 
 export default function MealPlan() {
   const navigate = useNavigate()
-  const { currentPlan, setCurrentPlan, setCart } = usePlanStore()
+  const { setCart } = usePlanStore()
   const { logout } = useAuthStore()
 
-  const [plan, setPlan] = useState<MealPlanType | null>(currentPlan)
-  const [loading, setLoading] = useState(!currentPlan)
+  const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
-  const [creatingCart, setCreatingCart] = useState(false)
-  const [error, setError] = useState('')
 
   useEffect(() => {
-    async function loadPlan() {
-      if (currentPlan) {
-        setPlan(currentPlan)
-        setLoading(false)
-        return
-      }
-
-      try {
-        // Try to get existing plans
-        const plans = await api.meals.list(1)
-        if (plans.length > 0) {
-          setPlan(plans[0])
-          setCurrentPlan(plans[0])
-        } else {
-          // Generate new plan
-          await generatePlan()
-        }
-      } catch {
-        setError('Failed to load meal plan')
-      } finally {
-        setLoading(false)
-      }
-    }
-    loadPlan()
+    // Simulate loading
+    const timer = setTimeout(() => setLoading(false), 800)
+    return () => clearTimeout(timer)
   }, [])
 
-  const generatePlan = async () => {
-    setGenerating(true)
-    setError('')
-    try {
-      const newPlan = await api.meals.generate()
-      setPlan(newPlan)
-      setCurrentPlan(newPlan)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate meal plan')
-    } finally {
-      setGenerating(false)
-    }
+  const handleCreateCart = () => {
+    // Create mock cart and navigate
+    setCart({
+      id: 'demo-cart-001',
+      items: MOCK_PLAN.shopping_list.map((item, idx) => ({
+        id: `item-${idx}`,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.estimated_price,
+        checked: true,
+      })),
+      total: MOCK_PLAN.total_cost_estimate,
+    })
+    navigate('/cart')
   }
 
-  const handleCreateCart = async () => {
-    if (!plan) return
-    setCreatingCart(true)
-    try {
-      const cart = await api.cart.create(plan.id)
-      setCart(cart)
-      navigate('/cart')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create cart')
-    } finally {
-      setCreatingCart(false)
-    }
+  const handleRegenerate = () => {
+    setGenerating(true)
+    setTimeout(() => setGenerating(false), 1500)
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-cream">
         <div className="text-center">
           <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-500">Loading your meal plan...</p>
+          <p className="text-charcoal/60">Creating your perfect meal plan...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen py-8 px-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-cream py-6 px-4">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <Link to="/" className="font-display text-2xl text-primary-500">
+        <div className="flex items-center justify-between mb-6">
+          <Link to="/" className="font-display text-xl text-primary-500">
             Food Minded
           </Link>
           <div className="flex items-center gap-4">
-            <Link to="/configure" className="text-sm text-gray-600 hover:text-primary-500">
-              Edit Preferences
+            <Link to="/configure" className="text-sm text-charcoal/60 hover:text-primary-500">
+              Edit Plan
             </Link>
-            <button onClick={logout} className="text-sm text-gray-600 hover:text-primary-500">
+            <button onClick={logout} className="text-sm text-charcoal/60 hover:text-primary-500">
               Logout
             </button>
           </div>
         </div>
 
-        {error && (
-          <div className="p-4 bg-red-50 text-red-600 rounded-xl text-sm mb-6">
-            {error}
+        {/* Plan Header Card */}
+        <div className="bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl p-6 text-white mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="font-display text-2xl sm:text-3xl mb-1">Your Family's Meal Plan</h1>
+              <p className="text-white/80">
+                {MOCK_PLAN.days.length} days · {MOCK_PLAN.shopping_list.length} ingredients · ~${MOCK_PLAN.total_cost_estimate.toFixed(0)} budget
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handleRegenerate}
+                disabled={generating}
+                className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-sm font-medium transition-all disabled:opacity-50"
+              >
+                {generating ? 'Regenerating...' : '🔄 Regenerate'}
+              </button>
+            </div>
           </div>
-        )}
+        </div>
 
-        {plan ? (
-          <>
-            {/* Plan Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-              <div>
-                <h1 className="font-display text-3xl">Your Meal Plan</h1>
-                <p className="text-gray-600">
-                  {plan.plan_data.days.length} days · ${plan.total_cost_estimate.toFixed(2)} estimated
-                </p>
-              </div>
-              <div className="flex gap-3">
-                <button
-                  onClick={generatePlan}
-                  disabled={generating}
-                  className="btn-outline"
-                >
-                  {generating ? 'Regenerating...' : 'Regenerate'}
-                </button>
-                <button
-                  onClick={handleCreateCart}
-                  disabled={creatingCart}
-                  className="btn-primary"
-                >
-                  {creatingCart ? 'Creating Cart...' : 'Review Cart'}
-                </button>
-              </div>
-            </div>
-
-            {/* Day Cards */}
-            <div className="space-y-8">
-              {plan.plan_data.days.map((day) => (
-                <div key={day.day} className="card">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-display text-xl">Day {day.day}</h2>
-                    <div className="text-sm text-gray-500">
-                      {day.daily_totals.calories} cal · {day.daily_totals.protein_g}g P ·{' '}
-                      {day.daily_totals.carbs_g}g C · {day.daily_totals.fat_g}g F
-                    </div>
-                  </div>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {day.meals.map((meal, idx) => (
-                      <MealCard key={idx} meal={meal} />
-                    ))}
-                  </div>
+        {/* Day Cards */}
+        <div className="space-y-6 mb-8">
+          {MOCK_PLAN.days.map((day) => (
+            <div key={day.day} className="bg-white rounded-2xl shadow-soft overflow-hidden">
+              <div className="bg-charcoal/5 px-5 py-3 flex items-center justify-between">
+                <h2 className="font-display text-lg text-charcoal">Day {day.day}</h2>
+                <div className="text-sm text-charcoal/60">
+                  {day.daily_totals.calories} cal · {day.daily_totals.protein_g}g protein
                 </div>
-              ))}
-            </div>
-
-            {/* Shopping List Preview */}
-            <div className="card mt-8">
-              <h2 className="font-display text-xl mb-4">Shopping List Preview</h2>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {plan.plan_data.shopping_list.slice(0, 9).map((item, idx) => (
-                  <div key={idx} className="flex justify-between p-3 bg-gray-50 rounded-lg">
-                    <span className="text-sm">{item.name}</span>
-                    <span className="text-sm text-gray-500">${item.estimated_price.toFixed(2)}</span>
-                  </div>
+              </div>
+              <div className="p-4 grid sm:grid-cols-2 gap-3">
+                {day.meals.map((meal, idx) => (
+                  <MealCard key={idx} meal={meal} index={idx} />
                 ))}
               </div>
-              {plan.plan_data.shopping_list.length > 9 && (
-                <p className="text-sm text-gray-500 mt-3">
-                  +{plan.plan_data.shopping_list.length - 9} more items
-                </p>
-              )}
             </div>
-          </>
-        ) : (
-          <div className="text-center py-16">
-            <h2 className="font-display text-2xl mb-4">No Meal Plan Yet</h2>
-            <p className="text-gray-600 mb-6">
-              Generate your first meal plan based on your preferences.
-            </p>
-            <button onClick={generatePlan} disabled={generating} className="btn-primary">
-              {generating ? 'Generating...' : 'Generate Meal Plan'}
-            </button>
+          ))}
+        </div>
+
+        {/* Shopping List Preview */}
+        <div className="bg-white rounded-2xl shadow-soft p-5 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-display text-xl text-charcoal">Shopping List</h2>
+            <span className="text-sm text-charcoal/60">{MOCK_PLAN.shopping_list.length} items</span>
           </div>
-        )}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+            {MOCK_PLAN.shopping_list.slice(0, 6).map((item, idx) => (
+              <div key={idx} className="flex justify-between items-center p-3 bg-charcoal/5 rounded-xl">
+                <span className="text-sm text-charcoal">{item.name}</span>
+                <span className="text-sm font-medium text-primary-600">${item.estimated_price.toFixed(2)}</span>
+              </div>
+            ))}
+          </div>
+          {MOCK_PLAN.shopping_list.length > 6 && (
+            <p className="text-sm text-charcoal/50 mt-3 text-center">
+              +{MOCK_PLAN.shopping_list.length - 6} more items in your cart
+            </p>
+          )}
+        </div>
+
+        {/* CTA */}
+        <button
+          onClick={handleCreateCart}
+          className="w-full btn-primary py-4 text-lg"
+        >
+          Review Shopping Cart →
+        </button>
       </div>
     </div>
   )

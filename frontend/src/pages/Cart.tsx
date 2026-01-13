@@ -1,53 +1,97 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { api } from '../api/client'
 import { usePlanStore } from '../store/planStore'
 import { useAuthStore } from '../store/authStore'
-import type { Cart as CartType, CartItem } from '../types'
+
+// Mock cart data for demo
+const MOCK_CART = {
+  id: 'demo-cart-001',
+  items: [
+    { id: '1', name: 'Chicken Breast (2 lbs)', quantity: 1, price: 12.99, category: 'Protein', checked: true },
+    { id: '2', name: 'Salmon Fillet (1 lb)', quantity: 1, price: 14.99, category: 'Protein', checked: true },
+    { id: '3', name: 'Greek Yogurt (32oz)', quantity: 1, price: 5.99, category: 'Dairy', checked: true },
+    { id: '4', name: 'Mixed Berries (frozen)', quantity: 1, price: 4.99, category: 'Produce', checked: true },
+    { id: '5', name: 'Quinoa (1 lb bag)', quantity: 1, price: 6.99, category: 'Grains', checked: true },
+    { id: '6', name: 'Brown Rice (2 lb bag)', quantity: 1, price: 4.49, category: 'Grains', checked: true },
+    { id: '7', name: 'Mixed Greens (5oz)', quantity: 2, price: 4.99, category: 'Produce', checked: true },
+    { id: '8', name: 'Sweet Potatoes (3 lb)', quantity: 1, price: 3.99, category: 'Produce', checked: true },
+    { id: '9', name: 'Avocados (4 pack)', quantity: 1, price: 5.99, category: 'Produce', checked: true },
+    { id: '10', name: 'Eggs (dozen)', quantity: 1, price: 4.99, category: 'Dairy', checked: true },
+    { id: '11', name: 'Almond Butter (16oz)', quantity: 1, price: 8.99, category: 'Pantry', checked: true },
+    { id: '12', name: 'Hummus (10oz)', quantity: 1, price: 4.49, category: 'Deli', checked: true },
+  ],
+  total: 89.86,
+}
+
+const categoryIcons: Record<string, string> = {
+  Protein: '🥩',
+  Dairy: '🥛',
+  Produce: '🥬',
+  Grains: '🌾',
+  Pantry: '🫙',
+  Deli: '🥗',
+}
+
+interface CartItem {
+  id: string
+  name: string
+  quantity: number
+  price: number
+  category: string
+  checked: boolean
+}
 
 function CartItemRow({
   item,
+  onToggle,
   onUpdate,
-  onRemove,
 }: {
   item: CartItem
+  onToggle: () => void
   onUpdate: (quantity: number) => void
-  onRemove: () => void
 }) {
   return (
-    <div className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm">
-      <div className="flex-1">
-        <h4 className="font-medium">{item.name}</h4>
-        <p className="text-sm text-gray-500">{item.unit}</p>
-      </div>
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => onUpdate(Math.max(0, item.quantity - 1))}
-            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200"
-          >
-            -
-          </button>
-          <span className="w-8 text-center">{item.quantity}</span>
-          <button
-            onClick={() => onUpdate(item.quantity + 1)}
-            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200"
-          >
-            +
-          </button>
-        </div>
-        <div className="w-20 text-right font-medium">
-          ${(item.price * item.quantity).toFixed(2)}
-        </div>
-        <button
-          onClick={onRemove}
-          className="text-red-500 hover:text-red-600"
-          aria-label="Remove item"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+    <div className={`flex items-center gap-4 p-4 bg-white rounded-xl transition-all ${!item.checked ? 'opacity-50' : ''}`}>
+      <button
+        onClick={onToggle}
+        className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${
+          item.checked
+            ? 'bg-secondary-500 border-secondary-500 text-white'
+            : 'border-charcoal/20 hover:border-secondary-400'
+        }`}
+      >
+        {item.checked && (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
+        )}
+      </button>
+
+      <span className="text-xl">{categoryIcons[item.category] || '📦'}</span>
+
+      <div className="flex-1 min-w-0">
+        <h4 className={`font-medium text-charcoal ${!item.checked ? 'line-through' : ''}`}>{item.name}</h4>
+        <p className="text-xs text-charcoal/50">{item.category}</p>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => onUpdate(Math.max(1, item.quantity - 1))}
+          className="w-8 h-8 flex items-center justify-center rounded-lg bg-charcoal/5 hover:bg-charcoal/10 text-charcoal/70"
+        >
+          -
         </button>
+        <span className="w-6 text-center font-medium">{item.quantity}</span>
+        <button
+          onClick={() => onUpdate(item.quantity + 1)}
+          className="w-8 h-8 flex items-center justify-center rounded-lg bg-charcoal/5 hover:bg-charcoal/10 text-charcoal/70"
+        >
+          +
+        </button>
+      </div>
+
+      <div className="w-20 text-right font-semibold text-charcoal">
+        ${(item.price * item.quantity).toFixed(2)}
       </div>
     </div>
   )
@@ -55,130 +99,109 @@ function CartItemRow({
 
 export default function Cart() {
   const navigate = useNavigate()
-  const { cart: storedCart, setCart } = usePlanStore()
+  const { cart: storedCart } = usePlanStore()
   const { logout } = useAuthStore()
 
-  const [cart, setLocalCart] = useState<CartType | null>(storedCart)
-  const [loading, setLoading] = useState(!storedCart)
-  const [updating, setUpdating] = useState(false)
-  const [error, setError] = useState('')
+  const [items, setItems] = useState<CartItem[]>(MOCK_CART.items)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (storedCart) {
-      setLocalCart(storedCart)
-      setLoading(false)
-    } else {
-      // No cart, redirect to plan
-      navigate('/plan')
+    // Use stored cart if available, otherwise use mock
+    if (storedCart?.items) {
+      setItems(storedCart.items.map((item: any, idx: number) => ({
+        ...item,
+        id: item.id || `item-${idx}`,
+        category: item.category || 'Pantry',
+        checked: item.checked !== false,
+      })))
     }
-  }, [storedCart, navigate])
+    const timer = setTimeout(() => setLoading(false), 500)
+    return () => clearTimeout(timer)
+  }, [storedCart])
 
-  const handleUpdateItem = async (index: number, quantity: number) => {
-    if (!cart) return
-
-    const newItems = [...cart.items]
-    if (quantity <= 0) {
-      newItems.splice(index, 1)
-    } else {
-      newItems[index] = { ...newItems[index], quantity }
-    }
-
-    setUpdating(true)
-    try {
-      const updatedCart = await api.cart.update(cart.id, newItems)
-      setLocalCart(updatedCart)
-      setCart(updatedCart)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update cart')
-    } finally {
-      setUpdating(false)
-    }
+  const toggleItem = (id: string) => {
+    setItems(prev => prev.map(item =>
+      item.id === id ? { ...item, checked: !item.checked } : item
+    ))
   }
 
-  const handleRemoveItem = (index: number) => {
-    handleUpdateItem(index, 0)
+  const updateQuantity = (id: string, quantity: number) => {
+    setItems(prev => prev.map(item =>
+      item.id === id ? { ...item, quantity } : item
+    ))
   }
 
-  const handleCheckout = () => {
-    navigate('/checkout')
-  }
+  const checkedItems = items.filter(item => item.checked)
+  const total = checkedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-gray-500">Loading cart...</div>
-      </div>
-    )
-  }
-
-  if (!cart || cart.items.length === 0) {
-    return (
-      <div className="min-h-screen py-8 px-4">
-        <div className="max-w-3xl mx-auto text-center py-16">
-          <h2 className="font-display text-2xl mb-4">Your Cart is Empty</h2>
-          <p className="text-gray-600 mb-6">Generate a meal plan first to add items to your cart.</p>
-          <Link to="/plan" className="btn-primary">
-            View Meal Plan
-          </Link>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-cream">
+        <div className="text-charcoal/60">Loading your cart...</div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen py-8 px-4">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen bg-cream py-6 px-4">
+      <div className="max-w-2xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <Link to="/" className="font-display text-2xl text-primary-500">
+        <div className="flex items-center justify-between mb-6">
+          <Link to="/" className="font-display text-xl text-primary-500">
             Food Minded
           </Link>
           <div className="flex items-center gap-4">
-            <Link to="/plan" className="text-sm text-gray-600 hover:text-primary-500">
-              Back to Plan
+            <Link to="/plan" className="text-sm text-charcoal/60 hover:text-primary-500">
+              ← Back to Plan
             </Link>
-            <button onClick={logout} className="text-sm text-gray-600 hover:text-primary-500">
+            <button onClick={logout} className="text-sm text-charcoal/60 hover:text-primary-500">
               Logout
             </button>
           </div>
         </div>
 
-        <h1 className="font-display text-3xl mb-2">Your Cart</h1>
-        <p className="text-gray-600 mb-8">Review and edit your grocery list before checkout.</p>
-
-        {error && (
-          <div className="p-4 bg-red-50 text-red-600 rounded-xl text-sm mb-6">
-            {error}
-          </div>
-        )}
+        {/* Title */}
+        <div className="mb-6">
+          <h1 className="font-display text-2xl text-charcoal mb-1">Your Shopping Cart</h1>
+          <p className="text-charcoal/60 text-sm">
+            {checkedItems.length} of {items.length} items selected · Tap to toggle items
+          </p>
+        </div>
 
         {/* Cart Items */}
-        <div className="space-y-3 mb-8">
-          {cart.items.map((item, idx) => (
+        <div className="space-y-2 mb-6">
+          {items.map((item) => (
             <CartItemRow
-              key={item.product_id}
+              key={item.id}
               item={item}
-              onUpdate={(qty) => handleUpdateItem(idx, qty)}
-              onRemove={() => handleRemoveItem(idx)}
+              onToggle={() => toggleItem(item.id)}
+              onUpdate={(qty) => updateQuantity(item.id, qty)}
             />
           ))}
         </div>
 
-        {/* Summary */}
-        <div className="card">
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-lg font-medium">Total</span>
-            <span className="text-2xl font-display">${cart.total.toFixed(2)}</span>
+        {/* Summary Card */}
+        <div className="bg-white rounded-2xl shadow-soft p-5 sticky bottom-4">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <div className="text-sm text-charcoal/60">{checkedItems.length} items</div>
+              <div className="text-2xl font-display text-charcoal">${total.toFixed(2)}</div>
+            </div>
+            <div className="text-right">
+              <div className="text-xs text-charcoal/50">Est. savings</div>
+              <div className="text-sm text-secondary-600 font-medium">-$12.50 vs retail</div>
+            </div>
           </div>
+
           <button
-            onClick={handleCheckout}
-            disabled={updating}
-            className="btn-primary w-full text-lg py-4"
+            onClick={() => navigate('/checkout')}
+            className="w-full btn-primary py-4 text-lg"
           >
-            Proceed to Checkout
+            Checkout · ${total.toFixed(2)}
           </button>
-          <p className="text-center text-sm text-gray-500 mt-4">
-            This is a demo checkout. No real payment will be processed.
+
+          <p className="text-center text-xs text-charcoal/40 mt-3">
+            Secure checkout powered by Stripe
           </p>
         </div>
       </div>

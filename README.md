@@ -18,46 +18,83 @@ Food Minded takes the guesswork out of family nutrition. Tell us your dietary go
 
 ## Screenshots
 
-### Desktop View
+### Desktop View - Full User Flow
 
-| Home | Register | Configure |
-|------|----------|-----------|
-| ![Home](screenshots/desktop/01-home.png) | ![Register](screenshots/desktop/02-register.png) | ![Configure](screenshots/desktop/03-configure.png) |
-| Warm, welcoming landing page focused on family nutrition | Simple signup to start your meal planning journey | Comprehensive diet configuration with allergy management |
+| Home | Register | Login |
+|------|----------|-------|
+| ![Home](screenshots/desktop/01-home.png) | ![Register](screenshots/desktop/02-register.png) | ![Login](screenshots/desktop/03-login.png) |
+| Warm, welcoming landing | Quick signup | Easy sign in |
+
+#### Configuration Wizard (5-Step Process)
+
+| Step 1: Diet Type | Step 2: Allergies | Step 3: Budget |
+|-------------------|-------------------|----------------|
+| ![Diet](screenshots/desktop/04-wizard-step1-diet.png) | ![Allergies](screenshots/desktop/05-wizard-step2-allergies.png) | ![Budget](screenshots/desktop/06-wizard-step3-budget.png) |
+| Choose nutrition style | Set family allergies | Budget & duration |
+
+| Step 4: Variety | Step 5: Summary |
+|-----------------|-----------------|
+| ![Variety](screenshots/desktop/07-wizard-step4-variety.png) | ![Summary](screenshots/desktop/08-wizard-step5-summary.png) |
+| Meal variety preference | Review & confirm |
+
+#### Meal Plan, Cart & Checkout
+
+| Meal Plan | Shopping Cart | Checkout | Confirmed |
+|-----------|---------------|----------|-----------|
+| ![Plan](screenshots/desktop/09-meal-plan.png) | ![Cart](screenshots/desktop/10-cart.png) | ![Checkout](screenshots/desktop/11-checkout.png) | ![Confirmed](screenshots/desktop/12-order-confirmed.png) |
+| 3-day plan with macros | Edit quantities | Delivery options | Order success! |
 
 ### Mobile View (iPhone 17 Pro)
 
-| Home | Register | Configure | Full Config |
-|------|----------|-----------|-------------|
-| ![Home Mobile](screenshots/mobile/01-home.png) | ![Register Mobile](screenshots/mobile/02-register.png) | ![Configure Mobile](screenshots/mobile/03-configure.png) | ![Configure Full](screenshots/mobile/04-configure-full.png) |
-| Mobile-first design for busy moms on the go | Quick registration on any device | Diet preferences at your fingertips | Complete meal planning configuration |
+| Home | Register | Wizard Step 1 | Wizard Step 2 |
+|------|----------|---------------|---------------|
+| ![Home](screenshots/mobile/01-home.png) | ![Register](screenshots/mobile/02-register.png) | ![Step1](screenshots/mobile/03-wizard-step1.png) | ![Step2](screenshots/mobile/04-wizard-step2.png) |
+
+| Wizard Step 3 | Wizard Step 4 | Wizard Step 5 | Meal Plan |
+|---------------|---------------|---------------|-----------|
+| ![Step3](screenshots/mobile/05-wizard-step3.png) | ![Step4](screenshots/mobile/06-wizard-step4.png) | ![Step5](screenshots/mobile/07-wizard-step5.png) | ![Plan](screenshots/mobile/08-meal-plan.png) |
+
+| Shopping Cart | Checkout | Order Confirmed |
+|---------------|----------|-----------------|
+| ![Cart](screenshots/mobile/09-cart.png) | ![Checkout](screenshots/mobile/10-checkout.png) | ![Confirmed](screenshots/mobile/11-order-confirmed.png) |
 
 ## MVP Features
 
-### 1. Family-Friendly Diet Configuration
+### 1. Multi-Step Configuration Wizard
+- **5-Step Process**: Guided setup with progress indicator and smooth animations
+- **Back/Edit Support**: Go back to any step to adjust your choices
+- **Summary Review**: Confirm all selections before generating your plan
+
+### 2. Family-Friendly Diet Configuration
 - **Multiple Diet Types**: Zone Diet (40/30/30), Ketogenic, Balanced, High Protein, Low Carb, Mediterranean
 - **Macro Tracking**: Automatic calculation of daily carb, protein, and fat targets based on calorie goals
 - **Family-Focused Language**: Designed with parents and families in mind
 
-### 2. Allergy Safety
+### 3. Allergy Safety
 - **8 Common Allergens**: Tree Nuts, Peanuts, Dairy, Eggs, Wheat/Gluten, Soy, Fish, Shellfish
 - **Automatic Filtering**: All meal suggestions automatically exclude declared allergens
 - **Peace of Mind**: Never worry about accidentally serving something unsafe
 
-### 3. Budget & Planning Control
+### 4. Budget & Planning Control
 - **Weekly Budget Slider**: Set your grocery spending limit ($50-$500)
 - **Flexible Duration**: Plan for 3, 5, 7, 10, or 14 days at a time
 - **Calorie Customization**: Adjust per-person calories to match your family's needs
 
-### 4. Meal Variety Options
+### 5. Meal Variety Options
 - **Minimal**: Batch cooking approach - less prep, more efficiency
 - **Moderate**: Good balance for families who like some variety
 - **High**: Different meals every day for adventurous eaters
 
-### 5. AI-Powered Meal Generation
-- **Smart Suggestions**: LLM-powered meal plans that respect all your preferences
-- **Nutrition-First**: Meals designed to hit your macro targets while tasting great
-- **Grocery Optimization**: Consolidated shopping lists that minimize waste and trips
+### 6. Complete Meal Plans
+- **Daily Breakdown**: Breakfast, lunch, dinner, and snacks with macros
+- **Per-Meal Nutrition**: Calories, protein, carbs, and fat for each meal
+- **Shopping List**: Consolidated ingredients with estimated prices
+
+### 7. Shopping Cart & Checkout
+- **Categorized Items**: Protein, Dairy, Produce, Grains, Pantry, Deli
+- **Quantity Controls**: Adjust amounts or remove items
+- **Delivery Options**: Store pickup (free) or home delivery
+- **Order Confirmation**: Clear next steps after placing order
 
 ## Tech Stack
 
@@ -73,10 +110,11 @@ Food Minded takes the guesswork out of family nutrition. Tell us your dietary go
 ## Design Philosophy
 
 Food Minded follows **indie hacker best practices** with a focus on:
-- **Warm, Natural Aesthetics**: Terracotta and sage color palette that feels welcoming, not clinical
+- **Warm, Natural Aesthetics**: Terracotta (#D97757) and sage (#6B8E6B) color palette
 - **Mobile-First**: Designed for busy parents checking their phones while managing chaos
 - **Clear Typography**: DM Serif Display headers with Nunito body text for readability
 - **Supportive Messaging**: Encouraging language that helps, not judges
+- **Modern UX**: Step-by-step wizard with smooth animations and progress indicators
 
 ## Quick Start
 
