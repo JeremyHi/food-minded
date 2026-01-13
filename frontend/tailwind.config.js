@@ -4,38 +4,50 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Health/Wellness theme colors
+        // Warm, natural palette for women/family-focused wellness
         primary: {
-          50: '#f0f7f1',
-          100: '#d8ead9',
-          200: '#b3d6b6',
-          300: '#87a878',
-          400: '#5d8a60',
-          500: '#2d5a3d',
-          600: '#244a32',
-          700: '#1c3a27',
-          800: '#142a1c',
-          900: '#0c1a11',
+          50: '#fef7f4',
+          100: '#fceee8',
+          200: '#f9d9cc',
+          300: '#f3b89e',
+          400: '#e8936b',
+          500: '#D97757', // Warm terracotta - energetic but soft
+          600: '#c45f3f',
+          700: '#a34a2f',
+          800: '#833a24',
+          900: '#6b301d',
         },
         secondary: {
-          50: '#fdf6f3',
-          100: '#fae9e2',
-          200: '#f4d0c2',
-          300: '#e8a98e',
-          400: '#c67b5c',
-          500: '#a85a3a',
-          600: '#8a4730',
-          700: '#6c3726',
-          800: '#4e281c',
-          900: '#301912',
+          50: '#f4f7f4',
+          100: '#e5ebe5',
+          200: '#c8d6c8',
+          300: '#a3b9a3',
+          400: '#7d9c7d',
+          500: '#6B8E6B', // Sage green - health, nature, calm
+          600: '#567256',
+          700: '#435943',
+          800: '#354535',
+          900: '#2a382a',
         },
-        cream: '#F8F5F0',
-        charcoal: '#2C2C2C',
+        cream: '#FBF8F4', // Warm cream background
+        charcoal: '#3D3D3D', // Warm charcoal text
+        accent: {
+          50: '#fdf9f0',
+          100: '#faf1d8',
+          200: '#f4e2b0',
+          300: '#e8cc7d',
+          400: '#d4b058',
+          500: '#C9A962', // Soft gold accent
+          600: '#a88c4d',
+          700: '#876f3c',
+          800: '#6b5730',
+          900: '#574727',
+        },
         sage: '#87A878',
       },
       fontFamily: {
         display: ['DM Serif Display', 'Georgia', 'serif'],
-        body: ['Outfit', 'system-ui', 'sans-serif'],
+        body: ['Nunito', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         'xl': '1rem',
@@ -43,8 +55,9 @@ export default {
         '3xl': '2rem',
       },
       boxShadow: {
-        'soft': '0 4px 20px rgba(0, 0, 0, 0.08)',
-        'medium': '0 8px 30px rgba(0, 0, 0, 0.12)',
+        'soft': '0 4px 20px rgba(61, 61, 61, 0.06)',
+        'medium': '0 8px 30px rgba(61, 61, 61, 0.10)',
+        'warm': '0 4px 24px rgba(217, 119, 87, 0.15)',
       },
     },
   },

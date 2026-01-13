@@ -35,7 +35,7 @@ export default function Login() {
           <Link to="/" className="font-display text-3xl text-primary-500">
             Food Minded
           </Link>
-          <p className="mt-2 text-gray-600">Welcome back</p>
+          <p className="mt-2 text-charcoal/60">Welcome back to your meal planning hub</p>
         </div>
 
         <div className="card">
@@ -47,7 +47,7 @@ export default function Login() {
             )}
 
             <div>
-              <label htmlFor="email" className="label">
+              <label htmlFor="email" className="label text-charcoal">
                 Email
               </label>
               <input
@@ -62,7 +62,7 @@ export default function Login() {
             </div>
 
             <div>
-              <label htmlFor="password" className="label">
+              <label htmlFor="password" className="label text-charcoal">
                 Password
               </label>
               <input
@@ -85,10 +85,10 @@ export default function Login() {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-sm text-charcoal/60">
             Don't have an account?{' '}
-            <Link to="/register" className="text-primary-500 hover:underline">
-              Create one
+            <Link to="/register" className="text-primary-500 hover:underline font-medium">
+              Start free
             </Link>
           </p>
         </div>

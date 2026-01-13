@@ -92,7 +92,7 @@ export default function Configure() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-gray-500">Loading...</div>
+        <div className="text-charcoal/50">Loading your preferences...</div>
       </div>
     )
   }
@@ -105,14 +105,14 @@ export default function Configure() {
           <Link to="/" className="font-display text-2xl text-primary-500">
             Food Minded
           </Link>
-          <button onClick={logout} className="text-sm text-gray-600 hover:text-primary-500">
+          <button onClick={logout} className="text-sm text-charcoal/60 hover:text-primary-500">
             Logout
           </button>
         </div>
 
-        <h1 className="font-display text-3xl mb-2">Configure Your Diet</h1>
-        <p className="text-gray-600 mb-8">
-          Set your preferences and we'll create a personalized meal plan just for you.
+        <h1 className="font-display text-3xl mb-2 text-charcoal">Plan Your Family's Meals</h1>
+        <p className="text-charcoal/60 mb-8">
+          Tell us about your family's needs and we'll create a personalized meal plan that everyone will love.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-8">
@@ -124,7 +124,8 @@ export default function Configure() {
 
           {/* Diet Type Selection */}
           <div className="card">
-            <h2 className="font-display text-xl mb-4">Diet Type</h2>
+            <h2 className="font-display text-xl mb-2 text-charcoal">Nutrition Style</h2>
+            <p className="text-sm text-charcoal/50 mb-4">Choose a balanced approach that fits your family's goals.</p>
             <div className="grid sm:grid-cols-2 gap-4">
               {dietTypes.map((diet) => (
                 <button
@@ -134,11 +135,11 @@ export default function Configure() {
                   className={`p-4 rounded-xl border-2 text-left transition-all ${
                     selectedDiet === diet.id
                       ? 'border-primary-500 bg-primary-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      : 'border-charcoal/10 hover:border-charcoal/20'
                   }`}
                 >
-                  <div className="font-medium">{diet.name}</div>
-                  <div className="text-sm text-gray-500 mt-1">{diet.description}</div>
+                  <div className="font-medium text-charcoal">{diet.name}</div>
+                  <div className="text-sm text-charcoal/60 mt-1">{diet.description}</div>
                   <div className="text-xs text-primary-600 mt-2">
                     {diet.carb_pct}% C / {diet.protein_pct}% P / {diet.fat_pct}% F
                   </div>
@@ -147,8 +148,8 @@ export default function Configure() {
             </div>
             {selectedDietInfo && (
               <div className="mt-4 p-4 bg-primary-50 rounded-xl">
-                <div className="text-sm font-medium text-primary-700">Daily Macro Targets</div>
-                <div className="flex gap-6 mt-2 text-sm">
+                <div className="text-sm font-medium text-primary-700">Daily Nutrition Targets</div>
+                <div className="flex gap-6 mt-2 text-sm text-charcoal/70">
                   <span>Carbs: {Math.round(dailyCalories * selectedDietInfo.carb_pct / 100 / 4)}g</span>
                   <span>Protein: {Math.round(dailyCalories * selectedDietInfo.protein_pct / 100 / 4)}g</span>
                   <span>Fat: {Math.round(dailyCalories * selectedDietInfo.fat_pct / 100 / 9)}g</span>
@@ -159,9 +160,9 @@ export default function Configure() {
 
           {/* Allergies */}
           <div className="card">
-            <h2 className="font-display text-xl mb-4">Food Allergies</h2>
-            <p className="text-sm text-gray-500 mb-4">
-              Select any allergies or foods to avoid. We'll never include these in your meal plan.
+            <h2 className="font-display text-xl mb-2 text-charcoal">Family Allergies & Restrictions</h2>
+            <p className="text-sm text-charcoal/50 mb-4">
+              Keep your family safe. We'll automatically exclude these from all meal suggestions.
             </p>
             <div className="flex flex-wrap gap-2">
               {allergies.map((allergy) => (
@@ -171,8 +172,8 @@ export default function Configure() {
                   onClick={() => toggleAllergy(allergy.id)}
                   className={`px-4 py-2 rounded-full text-sm transition-all ${
                     selectedAllergies.includes(allergy.id)
-                      ? 'bg-secondary-400 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-secondary-500 text-white'
+                      : 'bg-charcoal/5 text-charcoal/70 hover:bg-charcoal/10'
                   }`}
                 >
                   {allergy.name}
@@ -183,12 +184,13 @@ export default function Configure() {
 
           {/* Budget & Duration */}
           <div className="card">
-            <h2 className="font-display text-xl mb-4">Budget & Duration</h2>
+            <h2 className="font-display text-xl mb-2 text-charcoal">Budget & Planning</h2>
+            <p className="text-sm text-charcoal/50 mb-4">Set your grocery budget and how many days to plan ahead.</p>
 
             <div className="space-y-6">
               <div>
-                <label className="label">
-                  Weekly Budget: ${budgetMin} - ${budgetMax}
+                <label className="label text-charcoal">
+                  Weekly Grocery Budget: ${budgetMin} - ${budgetMax}
                 </label>
                 <div className="flex gap-4 items-center">
                   <input
@@ -198,23 +200,23 @@ export default function Configure() {
                     step="10"
                     value={budgetMax}
                     onChange={(e) => setBudgetMax(parseInt(e.target.value))}
-                    className="flex-1"
+                    className="flex-1 accent-primary-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="label">Meal Days: {mealDays}</label>
-                <div className="flex gap-2">
+                <label className="label text-charcoal">Plan Duration: {mealDays} days</label>
+                <div className="flex gap-2 flex-wrap">
                   {[3, 5, 7, 10, 14].map((days) => (
                     <button
                       key={days}
                       type="button"
                       onClick={() => setMealDays(days)}
-                      className={`px-4 py-2 rounded-lg text-sm ${
+                      className={`px-4 py-2 rounded-lg text-sm transition-all ${
                         mealDays === days
                           ? 'bg-primary-500 text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          : 'bg-charcoal/5 text-charcoal/70 hover:bg-charcoal/10'
                       }`}
                     >
                       {days} days
@@ -224,7 +226,7 @@ export default function Configure() {
               </div>
 
               <div>
-                <label className="label">Daily Calories</label>
+                <label className="label text-charcoal">Daily Calories (per person)</label>
                 <input
                   type="number"
                   value={dailyCalories}
@@ -234,30 +236,32 @@ export default function Configure() {
                   step="100"
                   className="input w-32"
                 />
+                <p className="text-xs text-charcoal/40 mt-1">Adjust based on your family's needs</p>
               </div>
             </div>
           </div>
 
           {/* Variety Level */}
           <div className="card">
-            <h2 className="font-display text-xl mb-4">Meal Variety</h2>
-            <div className="flex gap-4">
+            <h2 className="font-display text-xl mb-2 text-charcoal">Meal Variety</h2>
+            <p className="text-sm text-charcoal/50 mb-4">How much variety does your family want?</p>
+            <div className="flex gap-4 flex-wrap">
               {(['minimal', 'moderate', 'high'] as const).map((level) => (
                 <button
                   key={level}
                   type="button"
                   onClick={() => setVariety(level)}
-                  className={`flex-1 p-4 rounded-xl border-2 text-center transition-all ${
+                  className={`flex-1 min-w-[140px] p-4 rounded-xl border-2 text-center transition-all ${
                     variety === level
                       ? 'border-primary-500 bg-primary-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      : 'border-charcoal/10 hover:border-charcoal/20'
                   }`}
                 >
-                  <div className="font-medium capitalize">{level}</div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {level === 'minimal' && 'Repeat meals, batch cooking'}
-                    {level === 'moderate' && 'Some variety daily'}
-                    {level === 'high' && 'Different meals each day'}
+                  <div className="font-medium capitalize text-charcoal">{level}</div>
+                  <div className="text-xs text-charcoal/50 mt-1">
+                    {level === 'minimal' && 'Batch cooking, less prep'}
+                    {level === 'moderate' && 'Good balance for families'}
+                    {level === 'high' && 'New meals every day'}
                   </div>
                 </button>
               ))}
@@ -270,7 +274,7 @@ export default function Configure() {
             disabled={saving}
             className="btn-primary w-full text-lg py-4 disabled:opacity-50"
           >
-            {saving ? 'Generating Plan...' : 'Generate My Meal Plan'}
+            {saving ? 'Creating Your Family\'s Plan...' : 'Create My Family\'s Meal Plan'}
           </button>
         </form>
       </div>

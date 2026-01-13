@@ -47,7 +47,7 @@ export default function Register() {
           <Link to="/" className="font-display text-3xl text-primary-500">
             Food Minded
           </Link>
-          <p className="mt-2 text-gray-600">Create your account</p>
+          <p className="mt-2 text-charcoal/60">Start your family's meal planning journey</p>
         </div>
 
         <div className="card">
@@ -59,7 +59,7 @@ export default function Register() {
             )}
 
             <div>
-              <label htmlFor="email" className="label">
+              <label htmlFor="email" className="label text-charcoal">
                 Email
               </label>
               <input
@@ -74,7 +74,7 @@ export default function Register() {
             </div>
 
             <div>
-              <label htmlFor="password" className="label">
+              <label htmlFor="password" className="label text-charcoal">
                 Password
               </label>
               <input
@@ -89,7 +89,7 @@ export default function Register() {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="label">
+              <label htmlFor="confirmPassword" className="label text-charcoal">
                 Confirm Password
               </label>
               <input
@@ -108,17 +108,21 @@ export default function Register() {
               disabled={loading}
               className="btn-primary w-full disabled:opacity-50"
             >
-              {loading ? 'Creating account...' : 'Create Account'}
+              {loading ? 'Creating your account...' : 'Get Started Free'}
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-sm text-charcoal/60">
             Already have an account?{' '}
-            <Link to="/login" className="text-primary-500 hover:underline">
+            <Link to="/login" className="text-primary-500 hover:underline font-medium">
               Sign in
             </Link>
           </p>
         </div>
+
+        <p className="mt-6 text-center text-xs text-charcoal/40">
+          No credit card required. Free forever for basic features.
+        </p>
       </div>
     </div>
   )
